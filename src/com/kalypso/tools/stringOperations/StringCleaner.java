@@ -16,7 +16,7 @@ public class StringCleaner {
         this.aE = analyticsEngine;
     }
 
-    public void cleanDictionaries(){
+/*    public void cleanDictionaries(){
         for(Pair pair : aE.dictionary){
             ArrayList<String> cleanedWords = new ArrayList<>();
             for(String dictionaryWord : pair.words){
@@ -27,7 +27,7 @@ public class StringCleaner {
             }
             pair.words = cleanedWords;
         }
-    }
+    }*/
 
     public void cleanRawLines(){
         aE.stringsToAnalyze = splitRawLines(aE.stringsToAnalyze);

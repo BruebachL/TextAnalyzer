@@ -2,6 +2,7 @@ package com.kalypso.tools.fileOperations;
 
 import com.kalypso.tools.analytics.AnalyticsEngine;
 import com.kalypso.tools.analytics.Pair;
+import com.kalypso.tools.dataStructures.Trie;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -38,10 +39,10 @@ public class Importer {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(readFrom), StandardCharsets.UTF_8));
             String line;
-            ArrayList<String> languageDictionary = new ArrayList<>();
+            Trie languageDictionary = new Trie();
 
             while((line = br.readLine()) != null){
-                languageDictionary.add(line);
+                languageDictionary.insertStringIntoTrie(line.toLowerCase());
             }
 
             aE.dictionary.add(new Pair(language,languageDictionary));
@@ -60,16 +61,15 @@ public class Importer {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(readFrom), StandardCharsets.UTF_8));
             String line;
-            ArrayList<String> languageDictionary = new ArrayList<>();
+            Trie languageTrie = null;
+            for(Pair dict : aE.dictionary){
+                if(dict.getDescriptor().equals(language)){
+                    languageTrie = dict.words;
+                }
+            }
 
             while((line = br.readLine()) != null){
-                languageDictionary.add(line);
-            }
-            for(Pair pair : aE.dictionary){
-                if(pair.getDescriptor().equals(language)){
-                    pair.words.addAll(languageDictionary);
-                    Collections.sort(pair.words);
-                }
+                languageTrie.insertStringIntoTrie(line.toLowerCase());
             }
 
         } catch (FileNotFoundException e) {

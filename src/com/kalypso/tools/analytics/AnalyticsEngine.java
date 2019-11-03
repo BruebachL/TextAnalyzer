@@ -1,5 +1,6 @@
 package com.kalypso.tools.analytics;
 
+import com.kalypso.tools.dataStructures.Trie;
 import java.util.ArrayList;
 
 public class AnalyticsEngine {
@@ -14,7 +15,48 @@ public class AnalyticsEngine {
         this.verbosityLevel = verbosity;
     }
 
-    public Float[] analyzeLanguageScore(){
+    public Float[] refactorLanguage(){
+        Float[] languageScores = new Float[dictionary.size()];
+        for(int i = 0; i<dictionary.size();i++){
+            languageScores[i] = 0.0f;
+        }
+
+        long startTime = System.nanoTime()+1;
+        int i = 0;
+        for(String current : stringsToAnalyze){
+            for(Pair dict : dictionary){
+                Trie toUse = dict.words;
+                if(toUse.findStringInTrie(current).equals("notFound")){
+                    if(!notFoundWords.contains(current)){
+                        notFoundWords.add(current);
+                    }
+
+                }else{
+                    languageScores[0]++;
+                }
+            }
+
+            i++;
+
+            if(verbosityLevel>0){
+                if(i%1500==0){
+                    System.out.println(">>> Checked " + i + "/" + stringsToAnalyze.size() + " (" + i/(stringsToAnalyze.size()/100) + "%)" + " words so far <<<");
+                    long elapsedTime = ((System.nanoTime()-startTime)/1000000000)/60;
+                    if(elapsedTime!=0) {
+                        System.out.println(">>> Took " + elapsedTime + " minutes so far. " + i / (elapsedTime * 60) + " (Words per Second) <<<");
+                    }
+                    if(i!=0&&elapsedTime!=0) {
+                        System.out.println(">>> Estimated time remaining: " + (stringsToAnalyze.size() - i) / (i / elapsedTime) + " minutes <<<");
+                    }
+                    System.out.println(">>> Hits so far: " + (i - notFoundWords.size()) + " Misses so far: " + notFoundWords.size() + " <<<");
+                }
+            }
+
+        }
+        return languageScores;
+    }
+
+    /*public Float[] analyzeLanguageScore(){
         Float[] languageScores = new Float[dictionary.size()];
         for(Float score : languageScores){
             score = 0.0f;
@@ -104,6 +146,6 @@ public class AnalyticsEngine {
             }
         }
         return startingPointApproximation;
-    }
+    }*/
 
 }
