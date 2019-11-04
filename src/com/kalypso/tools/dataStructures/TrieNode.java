@@ -3,15 +3,21 @@ package com.kalypso.tools.dataStructures;
 public class TrieNode {
 
     TrieNode[] subNodes = new TrieNode[26];
-    String value;
+    char value;
+    String key;
     private TrieNode parent;
 
-    TrieNode(TrieNode p){
+    TrieNode(TrieNode p, char val){
         this.parent = p;
+        this.value = val;
     }
 
-    public void setValue(String value) {
+    public void setValue(char value) {
         this.value = value;
+    }
+
+    public void setKey(String key){
+        this.key = key;
     }
 
     public String toString(){
@@ -21,4 +27,5 @@ public class TrieNode {
             return parent.toString() + value;
         }
     }
+
 }

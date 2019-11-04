@@ -8,8 +8,8 @@ public class Trie {
     private int runningInsertionKey = 0;
 
     public Trie(){
-        this.root = new TrieNode(null);
-        this.root.setValue("");
+        this.root = new TrieNode(null, '\0');
+        this.root.setKey("");
     }
 
     private int convertAsciiToArrayPosition(char asciiChar){
@@ -26,13 +26,13 @@ public class Trie {
         for(char current : individualChars){
             int arrayPosition = convertAsciiToArrayPosition(current);
             if(currentNode.subNodes[arrayPosition]==null){
-                currentNode.subNodes[arrayPosition] = new TrieNode(currentNode);
+                currentNode.subNodes[arrayPosition] = new TrieNode(currentNode, current);
                 currentNode = currentNode.subNodes[arrayPosition];
             }else{
                 currentNode = currentNode.subNodes[arrayPosition];
             }
         }
-            currentNode.value = String.valueOf(runningInsertionKey);
+            currentNode.key = String.valueOf(runningInsertionKey);
             runningInsertionKey++;
     }
 
@@ -47,10 +47,10 @@ public class Trie {
                 currentNode = currentNode.subNodes[arrayPosition];
             }
         }
-        if(currentNode.value==null){
+        if(currentNode.key==null){
             return "notFound";
         }
-        return currentNode.value;
+        return currentNode.key;
 
     }
 

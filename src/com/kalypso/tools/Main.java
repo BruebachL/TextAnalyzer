@@ -3,9 +3,12 @@ package com.kalypso.tools;
 import com.kalypso.tools.analytics.AnalyticsEngine;
 import com.kalypso.tools.analytics.Pair;
 import com.kalypso.tools.dataStructures.Trie;
+import com.kalypso.tools.dataStructures.TrieNode;
+import com.kalypso.tools.dataStructures.TrieTraveler;
 import com.kalypso.tools.fileOperations.Importer;
 import com.kalypso.tools.stringOperations.StringCleaner;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -28,8 +31,18 @@ public class Main {
         System.out.println("Took " + (float)((TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-engine.startTime))) + " seconds.");
         System.out.println();
 
-        System.out.println(engine.dictionary.get(0).words.findStringsLastNode("amazing").toString());
+        TrieTraveler traveler = new TrieTraveler(engine.dictionary.get(0).words.findStringsLastNode("the"));
 
+        ArrayList<TrieNode> subwords = traveler.findAllSubWords();
+
+        for(TrieNode subword : subwords){
+            System.out.println(subword.toString());
+        }
+
+        //printNotFoundWords(engine);
+    }
+
+    public static void printNotFoundWords(AnalyticsEngine engine){
         int counter = 0;
         Collections.sort(engine.notFoundWords);
         for(String notFoundWord : engine.notFoundWords){
