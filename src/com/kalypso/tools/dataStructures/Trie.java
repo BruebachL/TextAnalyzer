@@ -4,15 +4,15 @@ import java.security.InvalidParameterException;
 
 public class Trie {
 
-    TrieNode root;
-    int runningInsertionKey = 0;
+    private TrieNode root;
+    private int runningInsertionKey = 0;
 
     public Trie(){
-        this.root = new TrieNode();
+        this.root = new TrieNode(null);
         this.root.setValue("");
     }
 
-    public int convertAsciiToArrayPosition(char asciiChar){
+    private int convertAsciiToArrayPosition(char asciiChar){
         int arrayPosition = (int)(asciiChar)-97;
         if(arrayPosition<0||arrayPosition>26){
             throw new InvalidParameterException();
@@ -26,7 +26,7 @@ public class Trie {
         for(char current : individualChars){
             int arrayPosition = convertAsciiToArrayPosition(current);
             if(currentNode.subNodes[arrayPosition]==null){
-                currentNode.subNodes[arrayPosition] = new TrieNode();
+                currentNode.subNodes[arrayPosition] = new TrieNode(currentNode);
                 currentNode = currentNode.subNodes[arrayPosition];
             }else{
                 currentNode = currentNode.subNodes[arrayPosition];

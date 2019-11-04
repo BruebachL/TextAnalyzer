@@ -7,6 +7,7 @@ import com.kalypso.tools.fileOperations.Importer;
 import com.kalypso.tools.stringOperations.StringCleaner;
 
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -23,8 +24,12 @@ public class Main {
         Float[] languageScore = engine.refactorLanguage();
         System.out.println(languageScore[0] + " " + engine.dictionary.get(0).getDescriptor());
         //System.out.println(languageScore[1] + " " + engine.dictionary.get(1).getDescriptor());
-        System.out.println(engine.notFoundWords.size() + " (" + engine.notFoundWords.size()/(engine.stringsToAnalyze.size()/100) + "%)" + " not found.");
+        System.out.println(engine.notFoundWords.size() + " (" + (float)(engine.notFoundWords.size()/(engine.stringsToAnalyze.size()/100.0)) + "%)" + " not found.");
+        System.out.println("Took " + (float)((TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-engine.startTime))) + " seconds.");
         System.out.println();
+
+        System.out.println(engine.dictionary.get(0).words.findStringsLastNode("amazing").toString());
+
         int counter = 0;
         Collections.sort(engine.notFoundWords);
         for(String notFoundWord : engine.notFoundWords){

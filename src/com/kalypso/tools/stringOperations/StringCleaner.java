@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class StringCleaner {
 
-    AnalyticsEngine aE;
+    private AnalyticsEngine aE;
 
     public StringCleaner(AnalyticsEngine analyticsEngine){
         this.aE = analyticsEngine;
@@ -31,15 +31,15 @@ public class StringCleaner {
 
     public void cleanRawLines(){
         aE.stringsToAnalyze = splitRawLines(aE.stringsToAnalyze);
-        aE.stringsToAnalyze = replaceUmlaute(aE.stringsToAnalyze);
+        replaceUmlaute(aE.stringsToAnalyze);
         aE.stringsToAnalyze = removeSpecialCharacters(aE.stringsToAnalyze);
         aE.stringsToAnalyze = toLowerCase(aE.stringsToAnalyze);
     }
 
-    public ArrayList<String> splitRawLines(ArrayList<String> rawLines){
+    private ArrayList<String> splitRawLines(ArrayList<String> rawLines){
         ArrayList<String> splitList = new ArrayList<>();
         for(String rawLine : rawLines){
-            String[] subStrings = rawLine.split(" ");
+            String[] subStrings = rawLine.split("\\s+");
             splitList.addAll(Arrays.asList(subStrings));
         }
         return splitList;
@@ -47,19 +47,29 @@ public class StringCleaner {
 
     //Hard removes ALL special characters via a negative mask
 
-    public ArrayList<String> removeSpecialCharacters(ArrayList<String> splitList){
+    private ArrayList<String> removeSpecialCharacters(ArrayList<String> splitList){
         ArrayList<String> cleanedList = new ArrayList<>();
         Pattern regex = Pattern.compile("[^A-Za-z]");
         for(String splitWord : splitList){
             splitWord = replaceUmlaute(splitWord);
-            if(splitWord.contains("-")){
+            if(splitWord.contains("-")) {
                 String[] splitWords = splitWord.split("-");
-                for(String split : splitWords){
-                    split = split.replaceAll(String.valueOf(regex),"");
-                    if(split.length()>0) {
+                for (String split : splitWords) {
+                    split = split.replaceAll(String.valueOf(regex), "");
+                    if (split.length() > 0) {
                         cleanedList.add(split);
                     }
                 }
+                cleanedList.remove(splitWord);
+            }else if(splitWord.contains("/")){
+                    String[] splitWords = splitWord.split("/");
+                    for(String split : splitWords){
+                        split = split.replaceAll(String.valueOf(regex),"");
+                        if(split.length()>0) {
+                            cleanedList.add(split);
+                        }
+                    }
+                    cleanedList.remove(splitWord);
             }else {
                 splitWord = splitWord.replaceAll(String.valueOf(regex), "");
                 if(splitWord.length()>0) {
@@ -70,7 +80,7 @@ public class StringCleaner {
         return cleanedList;
     }
 
-    public ArrayList<String> toLowerCase(ArrayList<String> mixedCaseList){
+    private ArrayList<String> toLowerCase(ArrayList<String> mixedCaseList){
         ArrayList<String> lowerCaseList = new ArrayList<>();
         for(String word : mixedCaseList){
             lowerCaseList.add(word.toLowerCase());
@@ -79,7 +89,7 @@ public class StringCleaner {
     }
 
     private static String[][] UMLAUT_REPLACEMENTS = { { "Ä", "Ae" }, { "Ü", "Ue" }, { "Ö", "Oe" }, { "ä", "ae" }, { "ü", "ue" }, { "ö", "oe" }, { "ß", "ss" } };
-    public  String replaceUmlaute(String orig) {
+    private  String replaceUmlaute(String orig) {
         String result = orig;
 
         result = Normalizer.normalize(result, Normalizer.Form.NFKC);
@@ -91,7 +101,7 @@ public class StringCleaner {
         return result;
     }
 
-    public ArrayList<String> replaceUmlaute(ArrayList<String> orig) {
+    private ArrayList<String> replaceUmlaute(ArrayList<String> orig) {
 
         for(String current : orig) {
             current = Normalizer.normalize(current, Normalizer.Form.NFKC);
