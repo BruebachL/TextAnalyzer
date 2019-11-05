@@ -3,6 +3,7 @@ package com.kalypso.tools.fileOperations;
 import com.kalypso.tools.analytics.AnalyticsEngine;
 import com.kalypso.tools.analytics.Pair;
 import com.kalypso.tools.dataStructures.Trie;
+import com.kalypso.tools.stringOperations.StringCleaner;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +16,7 @@ public class Importer {
 
     public Importer(AnalyticsEngine analyticsEngine){
         this.aE = analyticsEngine;
+
     }
 
     public void readFileToAnalyze(String fileLocation){
@@ -42,7 +44,10 @@ public class Importer {
             Trie languageDictionary = new Trie();
 
             while((line = br.readLine()) != null){
-                languageDictionary.insertStringIntoTrie(line.toLowerCase());
+                ArrayList<String> cleanedRawLines = StringCleaner.cleanRawString(line);
+                for(String cleanLine : cleanedRawLines){
+                    languageDictionary.insertStringIntoTrie(cleanLine);
+                }
             }
 
             aE.dictionary.add(new Pair(language,languageDictionary));

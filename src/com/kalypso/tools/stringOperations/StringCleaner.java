@@ -3,9 +3,11 @@ package com.kalypso.tools.stringOperations;
 import com.kalypso.tools.analytics.AnalyticsEngine;
 import com.kalypso.tools.analytics.Pair;
 
+import java.lang.reflect.Array;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class StringCleaner {
@@ -29,6 +31,21 @@ public class StringCleaner {
         }
     }*/
 
+    public static ArrayList<String> cleanRawString(String rawString){
+            ArrayList<String> splitStrings = splitRawLine(rawString);
+             splitStrings =  replaceUmlaute(splitStrings);
+             splitStrings = removeSpecialCharacters(splitStrings);
+             splitStrings = toLowerCase(splitStrings);
+             return splitStrings;
+    }
+
+
+
+    private static ArrayList<String> splitRawLine(String rawLine){
+        List<String> splitList = Arrays.asList(rawLine.split("\\s+"));
+        return new ArrayList<>(splitList);
+    }
+
     public void cleanRawLines(){
         aE.stringsToAnalyze = splitRawLines(aE.stringsToAnalyze);
         replaceUmlaute(aE.stringsToAnalyze);
@@ -47,7 +64,7 @@ public class StringCleaner {
 
     //Hard removes ALL special characters via a negative mask
 
-    private ArrayList<String> removeSpecialCharacters(ArrayList<String> splitList){
+    public static ArrayList<String> removeSpecialCharacters(ArrayList<String> splitList){
         ArrayList<String> cleanedList = new ArrayList<>();
         Pattern regex = Pattern.compile("[^A-Za-z]");
         for(String splitWord : splitList){
@@ -80,7 +97,7 @@ public class StringCleaner {
         return cleanedList;
     }
 
-    private ArrayList<String> toLowerCase(ArrayList<String> mixedCaseList){
+    private static ArrayList<String> toLowerCase(ArrayList<String> mixedCaseList){
         ArrayList<String> lowerCaseList = new ArrayList<>();
         for(String word : mixedCaseList){
             lowerCaseList.add(word.toLowerCase());
@@ -89,7 +106,7 @@ public class StringCleaner {
     }
 
     private static String[][] UMLAUT_REPLACEMENTS = { { "Ä", "Ae" }, { "Ü", "Ue" }, { "Ö", "Oe" }, { "ä", "ae" }, { "ü", "ue" }, { "ö", "oe" }, { "ß", "ss" } };
-    private  String replaceUmlaute(String orig) {
+    private static String replaceUmlaute(String orig) {
         String result = orig;
 
         result = Normalizer.normalize(result, Normalizer.Form.NFKC);
@@ -101,7 +118,7 @@ public class StringCleaner {
         return result;
     }
 
-    private ArrayList<String> replaceUmlaute(ArrayList<String> orig) {
+    private static ArrayList<String> replaceUmlaute(ArrayList<String> orig) {
 
         for(String current : orig) {
             current = Normalizer.normalize(current, Normalizer.Form.NFKC);

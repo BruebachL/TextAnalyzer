@@ -10,18 +10,19 @@ import com.kalypso.tools.stringOperations.StringCleaner;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
 
     public static void main(String[] args) {
         AnalyticsEngine engine = new AnalyticsEngine(1);
-        Importer importer = new Importer(engine);
         StringCleaner sC = new StringCleaner(engine);
+        Importer importer = new Importer(engine);
         importer.readFileIntoDictionary("Resources/words_alpha.txt","English");
-       // engine.readFileIntoDictionary("D:\\Coding\\german_words.txt","German");
+        importer.readFileIntoDictionary("Resources/german_words.txt","German");
         importer.amendDictionaryFile("Resources/google-10000-english.txt","English");
-        importer.readFileToAnalyze("Resources/moby10b.txt");
+        importer.readFileToAnalyze("Resources/bieneMaja.txt");
         sC.cleanRawLines();
         //sC.cleanDictionaries();
         Float[] languageScore = engine.refactorLanguage();
@@ -31,15 +32,34 @@ public class Main {
         System.out.println("Took " + (float)((TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-engine.startTime))) + " seconds.");
         System.out.println();
 
-        TrieTraveler traveler = new TrieTraveler(engine.dictionary.get(0).words.findStringsLastNode("the"));
+        /*TrieTraveler traveler = new TrieTraveler(engine.dictionary.get(0).words.findStringsLastNode("the"));
 
         ArrayList<TrieNode> subwords = traveler.findAllSubWords();
 
         for(TrieNode subword : subwords){
             System.out.println(subword.toString());
-        }
+        }*/
 
-        //printNotFoundWords(engine);
+        printPredictedWords(engine);
+        printNotFoundWords(engine);
+    }
+
+    public static String getUserInput(){
+        Scanner scanner = new Scanner(System.in);
+        return scanner.next();
+    }
+
+    public static void printPredictedWords(AnalyticsEngine engine){
+        StringBuilder inputSoFar = new StringBuilder();
+        while(!((inputSoFar.append(getUserInput()).toString().equals("#")))){
+            TrieTraveler traveler = new TrieTraveler(engine.dictionary.get(0).words.findStringsLastNode(inputSoFar.toString()));
+
+        ArrayList<TrieNode> subwords = traveler.findAllSubWords();
+
+        for(int i = 0; (i<10&&i<subwords.size()); i++){
+            System.out.println(subwords.get(i).toString());
+        }
+        }
     }
 
     public static void printNotFoundWords(AnalyticsEngine engine){
